@@ -1,49 +1,1333 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <meta name="title" content="How to build and run an international open-data image repository">
+    <meta name="description" content="RSEConUK 2019 talk on how the Image Data Repository was built">
 
-		<link rel="stylesheet" href="css/reset.css">
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://downloads.openmicroscopy.org/presentations/2019/rseconuk2019-idr/">
+    <meta property="og:title" content="How to build and run an international open-data image repository">
+    <meta property="og:description" content="RSEConUK 2019 talk on how the Image Data Repository was built">
+    <meta property="og:image" content="https://downloads.openmicroscopy.org/presentations/2019/rseconuk2019-idr/images/media/social-preview.jpg">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/monokai.css">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://downloads.openmicroscopy.org/presentations/2019/rseconuk2019-idr/">
+    <meta property="twitter:title" content="How to build and run an international open-data image repository">
+    <meta property="twitter:description" content="RSEConUK 2019 talk on how the Image Data Repository was built">
+    <meta property="twitter:image" content="https://downloads.openmicroscopy.org/presentations/2019/rseconuk2019-idr/images/media/social-preview.jpg">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <title>How to build and run an international open-data image repository</title>
 
-		<script src="js/reveal.js"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/white.css">
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true }
-				]
-			});
-		</script>
-	</body>
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/monokai.css">
+
+    <!-- All fontawesome styles -->
+    <link href="fontawesome-free-5.10.1-web/css/all.min.css" rel="stylesheet">
+
+    <!-- TODO: Create custom theme https://www.chenhuijing.com/blog/customising-revealjs-beyond-theming/ -->
+    <style type="text/css">
+      /* body {
+        background-image: url("images/idr-footer-40.png");
+        background-repeat: no-repeat;
+        background-position: left bottom;
+      } */
+
+      .reveal h1,
+      .reveal h2,
+      .reveal h3,
+      .reveal h4,
+      .reveal h5,
+      .reveal h6 {
+        font-family: "Source Sans Pro", Helvetica, sans-serif;
+        text-transform: initial;
+      }
+      .reveal h2,
+      .reveal h6 {
+        background-color: #ffc107;
+      }
+      .reveal h1,
+      .reveal h5 {
+        background-color: rgb(0, 0, 0, 0.8);
+        color: white;
+        display: inline-block;
+        padding: 0.1em 1em;
+      }
+
+      .reveal .slides > section,
+      .reveal .slides > section > section {
+        padding: 0;
+      }
+
+      p {
+        text-align: left;
+      }
+
+      .reveal blockquote {
+        quotes: "“" "”" "‘" "’";
+        text-align: left;
+        padding: 0em 2.5em;
+        border: 0;
+        margin: 0;
+        position: relative;
+      }
+      blockquote:before {
+        color: #ccc;
+        content: open-quote;
+        font-size: 5em;
+        line-height: 1;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+      blockquote footer {
+        font-size: 50%;
+        text-align: right;
+      }
+
+      .emph {
+        color: darkred;
+        font-weight: bold;
+        font-style: normal;
+      }
+
+      .quote {
+        quotes: "“" "”" "‘" "’";
+      }
+      .quote:before {
+        content: open-quote;
+      }
+      .quote:after {
+        content: close-quote;
+      }
+
+      .reveal section img {
+        border: 0;
+        vertical-align: middle;
+      }
+
+      .reveal ul {
+        list-style: url('images/logos/idr-bullet.png');
+      }
+
+      li p,
+      li li,
+      .subtext {
+        font-size: 80%;
+      }
+
+      .reveal .overlay-image {
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+      .reveal .overlay-image-opaque {
+        background-color: rgba(255, 255, 255, 1);
+      }
+
+      .l-double {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      div.l-absolute-full {
+        width: 100%;
+        height: 700px;
+      }
+
+      .logo-row-images img {
+        float: left;
+        padding: 0 0.2em;
+      }
+
+      .abs-top-left {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+      .abs-top-right {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      h2.fair-overlay-message {
+        position: absolute;
+        top: 250px;
+        left: 150px;
+        transform: rotate(330deg);
+        width: 75%;
+      }
+
+      div.imagescale-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        width: 100%;
+      }
+      div.imagescale-grid img {
+        width: 300px;
+        height: 240px;
+        padding: 0;
+        margin: 0;
+        object-fit: contain;
+      }
+      div.imagescale-grid div span {
+        position: relative;
+        background-color: rgba(255, 193, 7, 0.5);
+      }
+
+      div.timeline div.event {
+        background-color: #ffc107;
+      }
+      div.arrow {
+        padding: 12pt;
+      }
+
+      div.omero-components-grid {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        font-size: 20pt;
+      }
+      div.omero-components-grid div {
+        text-align: left;
+        padding: 10px;
+      }
+
+      div.idr-system-diagram {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        font-size: 20pt;
+      }
+      div.idr-system-diagram div {
+        border: 1px solid black;
+        margin: 2px;
+      }
+      div.idr-system-diagram div:empty {
+        border: 0;
+      }
+      div.idr-system-diagram div.arrow {
+        border: 0;
+        font-size: 200%;
+        font-weight: 900;
+        padding: 0;
+      }
+
+      div.idr-demo1 div img {
+        width: 100%;
+        box-shadow: none;
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+      div.idr-demo1 div {
+        background-size: cover;
+        border: 10px solid white;
+      }
+
+      div.image-border {
+        border: 2px solid #1976d2;
+        margin: 2px;
+      }
+      div.image-border img {
+        box-shadow: none;
+      }
+
+      div.idr-workers-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 8%);
+        font-size: 35%;
+      }
+      div.idr-workers-grid div {
+        background-color: white;
+      }
+      div.idr-workers-grid div:empty {
+        background-color: inherit;
+      }
+      div.idr-workers-grid img {
+        max-height: 80px;
+        width: 100%;
+        object-fit: contain;
+        box-shadow: none;
+        padding-top: 20px;
+        margin: 0;
+      }
+      div.idr-workers-grid div.highlight.fragment {
+        opacity: 1;
+        visibility: inherit;
+        transition-duration: 0s;
+      }
+      div.idr-workers-grid div.highlight.fragment.visible {
+        background-color: #ffc107;
+      }
+      div.idr-workers-grid div.curation {
+        font-size: 230%;
+      }
+
+      div.idrteam {
+        font-size: 35%;
+        text-align: left;
+        padding: 5px;
+        clear: both;
+      }
+      div.idrteam div {
+        width: 8%;
+        display: inline-block;
+        vertical-align: top;
+      }
+      div.idrteam img {
+        height: 80px;
+        width: 100%;
+        object-fit: cover;
+        object-position: top;
+        margin: 0;
+      }
+      div.idrteam img.logo {
+        width: 100%;
+        object-fit: contain;
+        margin: 0;
+      }
+      div.idrteam div.logo {
+        width: auto;
+      }
+      div.idrteam div.logo img {
+        height: 55px;
+      }
+
+      div.idrteam-former {
+        font-size: 25%;
+      }
+      div.idrteam-former img {
+        height: 50px;
+      }
+      div.idrteam-former div {
+        width: 5%;
+      }
+      div.idrteam-former p {
+        display: inline-block;
+        font-size: 200%;
+        margin-top: 0;
+      }
+
+      div.idr-funder-logos {
+        text-align: left;
+      }
+      div.idr-funder-logos img {
+        height: 70px;
+        margin: 5px 10px;
+      }
+
+      .slide-link a {
+        background-color: black;
+        color: white;
+        padding: 0.2em;
+        font-weight: bold;
+      }
+
+      .left {
+        float: left;
+      }
+      .right {
+        float: right;
+      }
+      img.h1em {
+        height: 1em;
+      }
+
+      .flex-container {
+        display: flex;
+      }
+      .flex1 {
+        flex: 1;
+      }
+      .flex2 {
+        flex: 2;
+      }
+      .flex3 {
+        flex: 3;
+      }
+      .flex4 {
+        flex: 4;
+      }
+
+
+      .large-first-letter::first-letter {
+        font-size: 200%;
+        font-weight: 900;
+        line-height: 50%;
+        color: darkred;
+      }
+      /* https://salferrarello.com/persistent-header-reveal-js/ */
+      .fe-persistent-header {
+        position: absolute;
+        bottom: 0;
+        z-index: -200000;
+        background-color: black;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        /* TODO: Enable footer */
+        display: none;
+      }
+      .print-pdf .fe-persistent-header {
+        display: none;
+      }
+      @media print {
+        .fe-persistent-header {
+          display: none;
+        }
+      }
+      .fe-persistent-header a {
+        color: #1976d2;
+        font-size: 0.8em;
+        margin: 2px;
+      }
+      .fe-persistent-header a img {
+        height: 0.8em;
+      }
+    </style>
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+
+  <!--
+    Printing instructions: Go to http://localhost:8000/?print-pdf&showNotes=true
+    Open the in-browser print dialog (CTRL/CMD+P).
+    Change the Destination setting to Save as PDF.
+    Change the Layout to Landscape.
+    Change the Margins to None.
+    Enable the Background graphics option.
+    Click Save.
+  -->
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <div class="fe-persistent-header">
+          <div><a href="https://idr.openmicroscopy.org/"><img src="images/logos/logo-idr.svg"></a></div>
+          <div><a href="https://idr.openmicroscopy.org/">idr.openmicroscopy.org</a></div>
+          <div><a href="https://www.openmicroscopy.org/"><img src="images/logos/ome.svg"></a></div>
+        </div>
+
+        <section data-background-image="images/slidebg/montage-20190903T130724.jpg">
+          <h2>How to build and run an international open-data image repository</h2>
+          <h5>
+            Simon Li<br/>
+            Open Microscopy Environment<br/>
+            University of Dundee
+          </h5>
+          <img src="images/logos/rseconuk2019-logo.png" class="plain right" style="width:50%;"/>
+          <aside class="notes" data-markdown>
+            ### Abstract
+
+            Image Data Resource (IDR, https://idr.openmicroscopy.org) is a public data repository containing over 100TB of life sciences imaging data from published studies in a searchable and reusable format. It is built from existing open-source tools but significant work was required to deploy and keep it running as a production service. I will talk about the journey from our first ever use of cloud services to scaling up a single- server system into the reliable public resource that exists today, including design choices, the mistakes we made, and the challenges we still face.
+
+            I will introduce some of the tools we use including Ansible, OpenStack, Docker and Kubernetes, but with a focus on the benefits of reproducible deployments rather than going into too much technical detail of particular tools. All of our infrastructure is open source and I will explain why, and provide links for people interested in finding out more.
+
+            This talk will hopefully provide an insight into how a public data services like this could be set up by your institution, including many of the considerations you may not have thought of.
+          </aside>
+        </section>
+
+        <section>
+
+          <section data-background-image="images/slidebg/flickr-tay-bridge-15006600934_de9358316e_o.jpg">
+            <h2>Overview</h2>
+            <ul class="overlay-image">
+              <li>Who, What, Why<!-- (6 min)--></li>
+              <li>Current deployment<!-- (3 min)--></li>
+              <li>How did we get here?<!-- (8 min)--></li>
+              <li>Where are we now?<!-- (3 min)--></li>
+            </ul>
+            <aside class="notes">
+              Main points: what should a data repository provide, and how could you do the same
+            </aside>
+          </section>
+
+          <section data-background-image="images/slidebg/flickr-tay-bridge-15006600934_de9358316e_o.jpg">
+            <div class="l-double">
+              <div>
+                <h2>Who am I?</h2>
+                <p class="overlay-image">Software engineer and sysadmin at the OME since 2012</p>
+              </div>
+              <div>
+                <img src="images/logos/ome.svg" class="plain" width="50%"/>
+                <h4>Open Microscopy Environment</h4>
+                <p class="subtext overlay-image">A consortium of universities, research labs, industry and developers producing open-source software and standards for microscopy data.</p>
+              </div>
+            </div>
+            <aside class="notes">
+              In 2014 we received a grant to build an image repository for the life sciences.
+            </aside>
+          </section>
+
+        </section>
+
+        <section>
+          <section class="center" data-background-image="images/slidebg/cables-usbdrive.jpg">
+            <h1>Why do we need the IDR?</h1>
+            <aside class="notes">
+              Three main drivers behind the IDR.
+            </aside>
+          </section>
+
+          <section data-background-image="images/slidebg/flickr-15761060784_730a8c04db_o.jpg">
+            <h2>Open-science</h2>
+            <div class="l-double">
+              <img src="images/background/Open_Access_logo_PLoS_transparent.svg" class="plain" width="60%" style="float:left;"/>
+              <ul class="overlay-image">
+                <li>Open-data</li>
+                <li>Open-access</li>
+                <li>Open infrastructure
+                  <p class="fragment">
+                    Don't build new databases from scratch, instead re-use and build upon existing work.
+                  </p>
+                </li>
+              </ul>
+            </div>
+            <aside class="notes">
+                There is a big push towards making data and research available to everyone, especially since much of it is publicly funded. Motivations include reproducibility of research, and novel analysis of existing data especially in combination with other open-data resources.
+                Open infrastructure open means we help others to setup their own repositories, and improve our own software.
+            </aside>
+          </section>
+
+          <section data-background-image="images/background/beware_leopard-flickr-40266208665_5d54408e59_c.jpg" data-background-size="contain" data-background-position="right">
+            <div style="width: 66%;">
+              <p>Data should be</p>
+              <p class="large-first-letter">Findable</p>
+              <p class="large-first-letter">Accessible</p>
+              <p class="large-first-letter">Interoperable</p>
+              <p class="large-first-letter">Reusable</p>
+              <p>
+                <ul>
+                  <li>A set of <a href="https://www.nature.com/articles/sdata201618">guidelines for publishing scientific data</a> <a href="https://europa.eu/rapid/press-release_STATEMENT-16-2967_en.htm">endorsed by G20 leaders</a></li>
+                  <li>But this is just the minimum</li>
+                </ul>
+              </p>
+              <h2 class="fair-overlay-message fragment">
+                Make it easy for others to use your data
+              </h2>
+            </div>
+            <div class="abs-top-right"><a href="https://www.flickr.com/photos/owlhere/40266208665/"><i class="fab fa-creative-commons"></i></a></div>
+            <aside class="notes" data-markdown>
+                Just making data available isn't enough, to be useful it needs to be discoverable and usable by others. This principle was endorsed by the G20 in 2016.
+
+                The FAIR Guiding Principles for scientific data management and stewardship https://www.nature.com/articles/sdata201618
+
+                As with most guidelines it's a guide, to be truly open you need to understand and follow the principles behind FAIR data and not just use it as a checklist. Requires experienced data managers.
+
+                If you're wondering why there's a "Beware of the leopard" sign see https://en.wikiquote.org/w/index.php?title=The_Hitchhiker%27s_Guide_to_the_Galaxy&oldid=2654759#Chapter_1
+            </aside>
+          </section>
+
+          <section>
+            <h2>Imaging data is complicated</h2>
+            <p>No it's not</p>
+            <div>
+              <img src="images/logos/facebook-ar21.svg"/>
+              <img src="images/logos/google-ar21.svg"/>
+              <img src="images/logos/instagram-ar21.svg"/>
+            </div>
+            <div class="fragment fade-in-then-out" style="position:absolute; left:210px; top:70px;">
+              <img src="images/background/googleimagesearch-cat.png" style="height:600px;"/>
+            </div>
+            <div class="fragment fade-in-then-out" style="position:absolute; left:210px; top:70px;">
+              <img src="images/background/googleimagesearch-ukrse.png" style="height:600px;"/>
+              <img src="images/background/ukrse-waste.png" style="height:300px;position:absolute; right:0; top:0;"/>
+            </div>
+            <div class="fragment">
+              <p>Yes it is!</p>
+              <ul>
+                <li>100s of proprietary file formats in the Life sciences</li>
+                <li>Many different imaging modalities and scales</li>
+              </ul>
+            </div>
+            <aside class="notes">
+              Social media sites and search engines happily handle billions of jpegs/pngs etc everyday. In the life sciences it's not so easy. 100s of proprietary formats, many different modalities, complex metadata.
+            </aside>
+          </section>
+
+          <section>
+            <!--h2>Overview of imaging scales</h2-->
+            <!-- r0 c0 r1 c1 -->
+            <div class="imagescale-grid">
+              <!-- Size -->
+              <a href="https://idr.openmicroscopy.org/webclient/img_detail/2858248/?dataset=403" style="grid-area: 1 / 1 / 2 / 2">
+                <img data-src="images/background/im2858248.jpg" title="Single molecule (Chromatin, Saccharomyces cerevisiae)"/>
+              </a>
+              <div style="grid-area: 1 / 1 / 2 / 2" class="fragment" data-fragment-index="1"><span>Single molecule</span></div>
+
+              <a href="https://idr.openmicroscopy.org/webclient/img_detail/1919136/?dataset=227" style="grid-area: 2 / 1 / 3 / 2">
+                <img data-src="images/background/im1919136-mouseeye-crop.png" title="Histopathology tissue (mouse eye, ~3 mm across)"/>
+              </a>
+              <div style="grid-area: 2 / 1 / 3 / 2" class="fragment" data-fragment-index="1"><span>Tissue</span></div>
+
+              <a href="https://idr.openmicroscopy.org/webclient/img_detail/4495402/?dataset=4408" style="grid-area: 3 / 1 / 4 / 2">
+                <img data-src="images/background/im4495402-zebrafish.png" title="Whole organism (zebrafish embryo, 921600𝗑380928, 351 Gigapixels)"/>
+              </a>
+              <div style="grid-area: 3 / 1 / 4 / 2" class="fragment" data-fragment-index="1"><span>351 Gigapixels</span></div>
+
+              <!-- Multiple image planes -->
+              <a href="https://idr.openmicroscopy.org/webclient/img_detail/5514525/?dataset=6692" style="grid-area: 1 / 2 / 2 / 3">
+                <img data-src="images/background/anim5514525-hela-mitosis.gif" title="Timelapse (HeLa cell mitosis)"/>
+              </a>
+              <div style="grid-area: 1 / 2 / 2 / 3" class="fragment" data-fragment-index="2"><span>Timelapse</span></div>
+
+              <a href="https://idr.openmicroscopy.org/webclient/img_detail/4007802/?dataset=3351" style="grid-area: 2 / 2 / 3 / 3">
+                <img data-src="images/background/4007804.gif" title="3D lightsheet (mouse embryo)" />
+              </a>
+            <div style="grid-area: 2 / 2 / 3 / 3" class="fragment" data-fragment-index="2"><span>3D lightsheet</span></span></div>
+
+              <a href="https://idr.openmicroscopy.org/webclient/img_detail/5025553/?dataset=5601" style="grid-area: 3 / 2 / 4 / 3">
+                <img data-src="images/background/im5025553.jpg" title="Tonsil, 27 Channels"/>
+              </a>
+              <div style="grid-area: 3 / 2 / 4 / 3" class="fragment" data-fragment-index="2"><span>27 channels</span></div>
+
+              <!-- Number of images -->
+              <a href="https://idr.openmicroscopy.org/webclient/?show=run-1072" style="grid-area: 1 / 3 / 2 / 4">
+                <img data-src="images/background/run1072-96well.png" title="96 well plate"/>
+              </a>
+              <div style="grid-area: 1 / 3 / 2 / 4" class="fragment" data-fragment-index="3"><span>96 well plate</span></div>
+
+              <a href="https://idr.openmicroscopy.org/webclient/?show=run-237" style="grid-area: 2 / 3 / 3 / 4">
+                <img data-src="images/background/run237-384well.png" title="384 well plate"/>
+              </a>
+              <div style="grid-area: 2 / 3 / 3 / 4" class="fragment" data-fragment-index="3"><span>384 well plate</span></div>
+
+              <div style="grid-area: 3 / 3 / 4 / 4" class="subtext">➕Custom metadata such as experimental infomation</div>
+            </div>
+            <aside class="notes" data-markdown>
+              - Different scales (single molecule, tissue, organism). Last is an electron micrograph of a zebrafish embryo, image is 921600𝗑380928 pixels (351 Gigapixels, 30000 times bigger than a typical 12 Mpx photo)
+              - Single image multiple planes (time, 3D, channels)
+              - Multiple images and HCS metadata
+            </aside>
+          </section>
+
+          <section data-background-image="images/pathway/big_data_harddrives.jpg" data-background-position="top right" data-background-repeat="no-repeat" data-background-size="50%">
+            <div class="l-double">
+              <div>
+                <a href="https://idr.openmicroscopy.org/">
+                  <img src="images/logos/logo-idr.svg" class="plain" style="width:60%;"/>
+                </a>
+                <p>A public repository for <span class="emph">reference</span> datasets and images of interest to a <span class="emph">broader community of users</span></p>
+                <p>Provides the expertise needed to curate and publish life-science imaging data effectively</p>
+              </div>
+              <div>
+                <span class="overlay-image right fragment">
+                  From this ▶▶▶
+                </span>
+              </div>
+            </div>
+            <aside class="notes" data-markdown>
+              [Euro-BioImaging - ELIXIR Image Data Strategy](http://www.eurobioimaging.eu/sites/default/files/Euro-BioImaging_Elixir_Image_Data_Strategy_0.pdf)
+            </aside>
+          </section>
+
+          <section data-background-image="images/current/idr-welcome.png" data-background-size="contain" data-background-position="top">
+            <h3 class="overlay-image-opaque right">
+              <a href="https://idr.openmicroscopy.org/">▶▶▶ idr.openmicroscopy.org</a>
+            </h3>
+        </section>
+
+          <section data-background-image="images/current/idr0015-webclient.png" data-background-size="contain" data-background-position="top">
+          </section>
+
+          <section data-background-image="images/current/idr0015-webclient-metadata.png" data-background-size="contain" data-background-position="top">
+            <img src="images/current/idr0015-locations.png" class="fragment"/>
+          </section>
+
+          <section data-background-image="images/current/idr0043-hpa-background.png">
+            <h2>IDR in numbers (August 2019)</h2>
+            <h1>5,341,278 images</h1>
+            <h1>19,076,141 files</h1>
+            <h1>125 TB</h1>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section class="center" data-background-image="images/slidebg/flickr-8050488275_e7209825be_o.jpg">
+            <h1>Behind the scenes</h1>
+          </section>
+
+          <section data-background-image="images/current/embassy-network.png" data-background-size="contain">
+            <h2 class="fragment fade-out">OpenStack private cloud<br/><span class="subtext">EMBL-EBI</span></h2>
+          </section>
+
+          <section>
+            <h2>Main components</h2>
+            <div class="omero-components-grid">
+              <a href="https://www.openmicroscopy.org/omero/"><img src="images/logos/omero-logo-800.png" class="plain"/></a>
+              <div>OMERO: Open-source enterprise platform for managing imaging data in the Life Sciences</div>
+              <a href="https://www.openmicroscopy.org/bio-formats/"><img src="images/logos/bio-formats.svg" class="plain"/></a>
+              <div>Bio-Formats: used by OMERO to read and write over 150 image formats including metadata</div>
+              <a href="https://www.postgresql.org/"><img src="images/logos/postgresql-horizontal.svg" class="plain"/></a>
+              <div style="vertical-align: bottom;">PostgreSQL: used by OMERO.server to store all metadata and file information</div>
+              <a href="https://nginx.org/en/"><img src="images/logos/nginx-ar21.svg" class="plain"/></a>
+              <div>Nginx: Loadbalancer proxy and caching</div>
+              <a href="https://jupyter.org/hub"><img src="images/logos/jupyterhub.svg" class="plain"/></a>
+              <div>JupyterHub: Co-located platform for analysing data in the IDR</div>
+              <a href="https://www.ebi.ac.uk/about/technology/about-us/"><img src="images/logos/embl_ebi_logo_black.svg" class="plain"/></a>
+              <div>Storage: Mix of cloud (read-write) and NFS (read-only)</div>
+            </div>
+          </section>
+
+          <!--section>
+            <div class="idr-system-diagram">
+              <div style="grid-area: 1 / 1 / 2 / 6">
+                <img src="images/logos/postgresql-horizontal.svg" class="plain"/>
+              </div>
+
+              <div class="arrow">⇳</div>
+              <div class="arrow">⇳</div>
+              <div class="arrow">⇳</div>
+              <div class="arrow">⇳</div>
+              <div class="arrow">⇳</div>
+
+              <div>
+                <img src="images/logos/omero-logo-800.png" class="plain"/>
+                OMERO.server read-only
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png" class="plain"/>
+                OMERO.server read-only
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png" class="plain"/>
+                OMERO.server read-only
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png" class="plain"/>
+                OMERO.server read-only
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png" class="plain"/>
+                OMERO.server read-write
+              </div>
+
+              <div class="arrow">⇳</div>
+              <div class="arrow">⇳</div>
+              <div></div>
+              <div></div>
+              <div></div>
+
+              <div>
+                OMERO.web
+              </div>
+              <div>
+                OMERO.web
+              </div>
+              <div class="arrow">⇳</div>
+              <div class="arrow">⇳</div>
+              <div></div>
+
+              <div class="arrow">⇳</div>
+              <div class="arrow">⇳</div>
+              <div></div>
+              <div></div>
+              <div></div>
+
+              <div style="grid-area: 7 / 3 / 9 / 5">
+                <img src="images/logos/haproxy-ar21.svg" class="plain"/>
+              </div>
+              <div style="grid-area: 7 / 1 / 9 / 3">
+                <img src="images/logos/nginx-ar21.svg" class="plain"/>
+              </div>
+            </div>
+            <aside class="notes">
+              Cluster of 5 OMERO.server (Hibernate, Java, Python) and OMERO.web (Django, Python). Nginx provides load-balancing and more importantly caching (some queries take a minute or longer)
+            </aside>
+          </section-->
+
+          <section data-background-image="images/current/embassy-network-crop.png" data-background-size="contain" data-background-position="right">
+            <h2>Data submission and curation</h2>
+            <div class="flex-container">
+              <div class="flex1 overlay-image">
+                <p>Average per submission</p>
+                <ul>
+                  <li>91,000 images</li>
+                  <li>323,000 files</li>
+                  <li>2.1 TB</li>
+                </ul>
+              </div>
+              <a href="https://github.com/IDR/idr-metadata/tree/0.6.8/idr0020-barr-chtog" class="flex2" style="position:relative; width:100%; height:10em">
+                <img src="images/current/idr0020-study.png" style="position:absolute; left:0; top:0;"/>
+                <img src="images/current/idr0020-annotation.png" style="position:absolute; left:2em; top:1.5em;"/>
+                <img src="images/current/idr0020-library.png" style="position:absolute; left:4em; top:3em;"/>
+              </a>
+            </div>
+            <aside class="notes">
+              Raw numbers: https://github.com/IDR/idr.openmicroscopy.org/blob/2019.07.09/_data/studies.tsv
+            </aside>
+          </section>
+
+        </section>
+
+        <section>
+
+            <section class="center" data-background-image="images/slidebg/idr0047-rois-im4496815.png">
+            <h1>How did we get here?</h1>
+            <div class="flex-container timeline overlay-image">
+              <div class="flex1 event">
+                <span class="emph">Early 2015</span>
+                Work started
+              </div>
+              <div class="arrow">▶</div>
+              <div class="flex1 event">
+                <span class="emph">October 2015</span> 
+                Demo 1
+              </div>
+              <div class="arrow">▶</div>
+              <div class="flex1 event">
+                <span class="emph">May 2016</span>
+                Demo 2
+              </div>
+              <div class="arrow">▶</div>
+              <div class="flex1 event">
+                <span class="emph">April 2017</span>
+                Official launch
+              </div>
+            </div>
+          </section>
+
+          <section data-background-image="images/pathway/omero510-serverinstall.png" data-background-size="contain" data-background-position="right">
+            <h2>What we started with</h2>
+            <div class="flex4">
+              <img src="images/logos/omero-logo-800.png" class="left h1em"/>
+              <img src="images/logos/postgresql-ar21.svg" class="left h1em"/>
+              <img src="images/logos/nginx-ar21.svg" class="left h1em"/>
+              <p class="subtext overlay-image" style="clear:left">Used by 100s of institutions around the world</p>
+              <div style="background-color:red; width:8%; float:left;font-size:0.7em;">&nbsp;</div>
+              <div style="background-color:#ffc107; width:72%; float:left; font-size:0.7em;">Current IDR: 125 TB</div>
+              <p class="subtext overlay-image" style="clear:left"><span style="color:red;">↳</span> At the time University of Dundee server held around 12 TB data</p>
+              <p class="subtext overlay-image">Everything done manually</p>
+              <pre><code data-trim style="overflow:hidden;">
+                  $ ssh idr.server
+
+                  # yum install java-1.8.0-openjdk
+                  # yum install python-{pip,devel,virtualenv,yaml,jinja2,tables}
+                  # ...
+                </code></pre>
+            </div>
+          </section>
+
+          <section data-background-image="images/slidebg/idr0015-plate4872.png">
+            <h2>What was new?</h2>
+            <ul style="margin-bottom:2em;" class="subtext overlay-image-opaque">
+              <li>New hardware: Servers and IBM Spectrum (GPFS) storage array</li>
+              <li>New way of working</li>
+            </ul>
+            <div class="flex-container fragment overlay-image-opaque">
+              <div class="flex1">
+                <a href="https://github.com/idr/">
+                  <img src="images/logos/github_octocat.png" class="plain"/>
+                  <img src="images/logos/github_logo.png" class="plain"/>
+                </a>
+              </div>
+              <div class="flex3">
+                <h2 class="quote">Infrastructure as code</h2>
+                <ul class="left">
+                  <li>Apply the software development process to managing servers</li>
+                  <li>Clear separation between data and applications</li>
+                </ul>
+              </div>
+            </div>
+            <aside class="notes">
+              This was all completely new to us
+            </aside>
+          </section>
+
+          <section data-background-image="images/logos/docker-official.svg" data-background-size="contain" data-background-position="right">
+            <h2>Demo 1, October 2015</h2>
+            <div class="idr-demo1 flex-container fragment">
+              <div style="background-image: url('images/pathway/idr0008-45684.png');">
+                <img src="images/logos/omero-logo-800.png"/>
+                <img src="images/logos/docker-ar21.svg"/>
+              </div>
+              <div style="background-image: url('images/pathway/idr0013-1483351.png');">
+                <img src="images/logos/omero-logo-800.png"/>
+                <img src="images/logos/docker-ar21.svg"/>
+              </div>
+              <div style="background-image: url('images/pathway/idr0015-1845607.png');">
+                <img src="images/logos/omero-logo-800.png"/>
+                <img src="images/logos/docker-ar21.svg"/>
+              </div>
+              <div style="background-image: url('images/pathway/idr0017-1706284.png');">
+                <img src="images/logos/omero-logo-800.png"/>
+                <img src="images/logos/docker-ar21.svg"/>
+              </div>
+            </div>
+
+            <div class="overlay-image-opaque fragment">
+              <p>It works... for a bit</span></p>
+              <ul class="subtext" data-fragment-index="1">
+                <li>Is it a hardware issue with new servers?</li>
+                <li>Is Docker too new and unreliable?</li>
+                <li>Bug in the software?</li>
+                <li>Something else?</li>
+              </ul>
+            </div>
+            <aside class="notes" data-markdown>
+              - 2015: Lot's of hype but still a relatively new technology, went with it anyway
+              - Hosted at the University of Dundee
+              - August 2015: Dundee: our hardware https://downloads.openmicroscopy.org/presentations/2016/Users-Meeting/Workshops/OMERO-at-scale-How-we-built-the-IDR/#/3
+              - Dundee storage platform: GPFS
+            </aside>
+          </section>
+
+          <section data-background-image="images/slidebg/flickr-8050490827_99defe693b_o.jpg">
+            <h2>First lesson: Verify your infrastructure at every step</h2>
+            <div class="overlay-image fragment">
+              <p>Make sure all layers of your stack are reliable</p>
+              <ul>
+                <li>Don't try too many new things at once</li>
+                <li>Virtualisation is convenient and powerful but you need to trust all layers</li>
+              </ul>
+            </div>
+            <aside class="notes">
+                If possible get someone else to run your infrastructure
+            </aside>
+          </section>
+
+          <section data-background-image="images/slidebg/clouds.jpg">
+            <h2>Demo 2, May 2016</h2>
+            <div class="logo-row-images" style="height:2em;">
+              <img src="images/logos/embl_ebi_logo_black.svg"/>
+              <img src="images/logos/openstack-logo-horizontal.svg"/>
+              <img src="images/logos/ansible-logo.svg"/>
+            </div>
+            <p class="overlay-image">OpenStack at EMBL-EBI with Ansible:</p>
+            <ul class="subtext overlay-image">
+              <li>Relatively easy to setup</li>
+              <li>Just requires SSH access to servers</li>
+              <li>Everything configured with YAML</li>
+            </ul>
+            <p class="subtext overlay-image">
+              One command can provision new servers, configure networking and storage, and install the IDR, reproducibly:
+              <a href="https://github.com/IDR/deployment/"><i class="fab fa-github"></i> IDR/deployment</a>
+            </p>
+            <p class="subtext fragment overlay-image">It works... for a bit</p>
+            <aside class="notes">
+              None of us had ever used the cloud before. IDR/deployment is partially tested in Travis.
+            </aside>
+          </section>
+
+          <section data-background-image="images/pathway/dev-ops-problem.jpg" data-background-size="contain" class="center">
+            <p class="fragment overlay-image-opaque">
+              We have a scaling problem, OMERO just wasn't designed for the amount of data and frequency of access. These problems only occur on a big system like the IDR.
+            </p>
+            <aside class="notes">
+              devops has become a generic buzzword but it's an excuse to show this image
+            </aside>
+          </section>
+
+          <!--section data-background-image="images/logos/openstack-logo-mark.svg" data-background-size="50%" data-background-position="top right"-->
+          <section data-background-image="images/slidebg/idr0038-im3414073.jpg">
+            <h2>How do you debug and test a 50+ (now 100+) TB system?</h2>
+            <div>
+              <a href="https://github.com/IDR/deployment/">
+                <div class="image-border overlay-image">
+                  <img src="images/logos/openstack-logo-horizontal.svg" style="height:1.5em;"/>
+                  ➕
+                  <img src="images/logos/ansible-logo.svg" style="height:1.5em;"/>
+                  ➕
+                  <i class="fab fa-github"></i> IDR/deployment
+                </div>
+              </a>
+              <div style="font-size:200%;"><span class="overlay-image">⬇</span></div>
+
+              <div class="flex-container">
+                <div class="flex1 image-border overlay-image">
+                  <img src="images/logos/logo-idr.svg"/>
+                  Production
+                </div>
+                <div class="flex1 image-border overlay-image">
+                  <img src="images/logos/logo-idr.svg"/>
+                  Staging
+                </div>
+                <div class="flex1 image-border overlay-image">
+                  <img src="images/logos/logo-idr.svg"/>
+                  Test-1
+                </div>
+                <div class="flex1 image-border overlay-image">
+                  <img src="images/logos/logo-idr.svg"/>
+                  Test-2
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section  data-background-image="images/slidebg/idr0054-im5025553.jpg">
+            <div>
+            <h2>Official release: April 2017</h2>
+            <img src="images/current/idr-size.svg" style="width:70%;" class="overlay-image-opaque right"/>
+          </div>
+          </section>
+
+        </section>
+
+        <section>
+          <section class="center" data-background-image="images/slidebg/idr0010-plate5890.png">
+            <h1>Where are we now?</h1>
+          </section>
+
+          <!--section data-background-image="images/slidebg/idr0053-im4495402.png"-->
+          <section>
+            <h2>Who's working on the IDR?</h2>
+            <div class="idr-workers-grid">
+              <!-- People -->
+              <div>
+                <img src="images/team/sebastien_besson.jpg"/>
+                Sebastien Besson
+              </div>
+              <div>
+                <img src="images/team/jeanmarie_burel.jpg"/>
+                Jean-Marie Burel
+              </div>
+              <div>
+                <img src="images/team/mark_carroll.jpg"/>
+                Mark Carroll
+              </div>
+              <div>
+                <img src="images/team/david_gault.png"/>
+                David Gault
+              </div>
+              <div>
+                <img src="images/team/riad_gozim.jpg"/>
+                Riad Gozim
+              </div>
+              <div>
+                <img src="images/team/simon_li.png"/>
+                Simon Li
+              </div>
+              <div>
+                <img src="images/team/dominik_lindner.png"/>
+                Dominik Lindner
+              </div>
+              <div>
+                <img src="images/team/melissa-linkert.jpg"/>
+                Melissa Linkert
+              </div>
+              <div>
+                <img src="images/team/josh_moore.jpg"/>
+                Josh Moore
+              </div>
+              <div>
+                <img src="images/team/will_moore.png"/>
+                Will Moore
+              </div>
+              <div>
+                <img src="images/team/petr_walczysko.png"/>
+                Petr Walczysko
+              </div>
+              <div>
+                <img src="images/team/frances_wong.jpg"/>
+                Frances Wong
+              </div>
+
+              <!-- OMERO Developers -->
+              <div>
+                <img src="images/logos/omero-logo-800.png"/>
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png"/>
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png"/>
+              </div>
+              <div></div>
+              <div>
+                <img src="images/logos/omero-logo-800.png"/>
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png"/>
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png"/>
+              </div>
+              <div></div>
+              <div>
+                <img src="images/logos/omero-logo-800.png"/>
+              </div>
+              <div>
+                <img src="images/logos/omero-logo-800.png"/>
+              </div>
+              <div></div>
+              <div></div>
+
+              <!-- IDR -->
+              <div>
+                <img src="images/logos/logo-idr.svg"/>
+              </div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div>
+                <img src="images/logos/logo-idr.svg"/>
+              </div>
+              <div>
+                <img src="images/logos/logo-idr.svg"/>
+              </div>
+              <div></div>
+              <div>
+                <img src="images/logos/logo-idr.svg"/>
+              </div>
+              <div></div>
+              <div></div>
+              <div></div>
+
+              <!-- Other -->
+              <div style="grid-area: 4 / 4 / 5 / 5">
+                <img src="images/logos/bio-formats.svg"/>
+              </div>
+              <div style="grid-area: 4 / 8 / 5 / 9">
+                <img src="images/logos/bio-formats.svg"/>
+              </div>
+              <div style="grid-area: 5 / 11 / 6 / 12">
+                <img src="images/logos/omero-logo-800.png"/>
+                QA/Tester
+              </div>
+              <div style="grid-area: 6 / 12 / 7 / 13" class="fragment highlight" data-fragment-index="1">
+                <img src="images/logos/logo-idr.svg"/>
+                Curator
+              </div>
+              <div style="grid-area: 6 / 2 / 7 / 11" class="fragment curation" data-fragment-index="1">
+                <p><span class="emph">Curation:</span> A critical factor in the success of the IDR (remember: FAIR)</p>
+                <ul>
+                  <li>Metadata for millions of images is manually curated</li>
+                  <li>Constant stream of new datasets</li>
+                </ul>
+              </div>
+            </div>
+            <aside class="notes">
+              A lot of embedded expert knowledge.
+              "Infrastructure as code" means the most important steps of the IDR deployment process are shared and well documented.
+              But process of getting data into the IDR involves a lot of manual steps.
+            </aside>
+          </section>
+
+          <section data-background-image="images/slidebg/montage-20190903T125456.jpg">
+            <h2>This is one of the largest public bioimage publication systems running in the world</h2>
+            <ul class="overlay-image">
+              <li>Publically available</li>
+              <li>Recommended by journals as a data repository</li>
+              <li>Whole stack is available on GitHub</li>
+            </ul>
+            <aside class="notes" data-markdown="">
+              Along the way we've learnt several lessons, some of which are mentioned, but hopefully you feel less intimidated about building an open-data resource like this.
+
+              There is lots more that I haven't mentioned required to keep the IDR running, including:
+              - Monitoring: is the system still working?</li>
+              - Managing upgrades and releases
+              - Adding new data
+            </aside>
+          </section>
+
+          <section data-background-image="images/current/idr-usage-1y.png" data-background-size="contain" data-background-position="top">
+            <div class="l-absolute-full">
+            <span class="overlay-image" style="vertical-align: bottom;">
+              <span class="overlay-image right">
+                  40,000 visitors in the past 12 months
+              </span>
+              <p class="subtext" style="position:absolute; bottom:0;">
+                <a href="https://github.com/IDR/deployment/"><i class="fab fa-github"></i> IDR/deployment</a>
+                <a href="https://github.com/IDR/idr-log-analysis/"><i class="fab fa-github"></i> IDR/idr-log-analysis</a>
+                </p>
+            </span>
+          </div>
+          </section>
+
+        </section>
+
+        <section>
+          <div class="idrteam">
+            <div>
+              <img src="images/team/jason_swedlow.jpg"/>
+              Jason Swedlow
+            </div>
+            <div>
+              <img src="images/team/sebastien_besson.jpg"/>
+              Sebastien Besson
+            </div>
+            <div>
+              <img src="images/team/jeanmarie_burel.jpg"/>
+              Jean-Marie Burel
+            </div>
+            <div>
+              <img src="images/team/mark_carroll.jpg"/>
+              Mark Carroll
+            </div>
+            <div>
+              <img src="images/team/david_gault.png"/>
+              David Gault
+            </div>
+            <div>
+              <img src="images/team/riad_gozim.jpg"/>
+              Riad Gozim
+            </div>
+            <div>
+              <img src="images/team/simon_li.png"/>
+              Simon Li
+            </div>
+            <div>
+              <img src="images/team/dominik_lindner.png"/>
+              Dominik Lindner
+            </div>
+            <div>
+              <img src="images/team/melissa-linkert.jpg"/>
+              Melissa Linkert
+            </div>
+            <div>
+              <img src="images/team/june_matthew.png"/>
+              June Matthew
+            </div>
+            <div>
+              <img src="images/team/josh_moore.jpg"/>
+              Josh Moore
+            </div>
+            <div>
+              <img src="images/team/will_moore.png"/>
+              Will Moore
+            </div>
+            <div>
+              <img src="images/team/petr_walczysko.png"/>
+              Petr Walczysko
+            </div>
+            <div>
+              <img src="images/team/frances_wong.jpg"/>
+              Frances Wong
+            </div>
+            <div class="logo">
+              <img src="images/logos/logo-ome.svg" class="plain logo"/>
+            </div>
+            <div class="logo">
+              <img src="images/logos/logo-dundee.png" class="plain logo"/>
+            </div>
+            <div class="logo right">
+                <img src="images/logos/logo-bristol.png" class="plain logo"/>
+            </div>
+            <div class="right">
+              <img src="images/team/rafael_carazosalas.png"/>
+              Rafael Carazo-salas
+            </div>
+          </div>
+
+          <div class="idrteam">
+            <div>
+              <img src="images/team/alvis_brazma.png"/>
+              Alvis Brazma
+            </div>
+            <div>
+              <img src="images/team/ugis_sarkans.png"/>
+              Ugis Sarkans
+            </div>
+            <div>
+              <img src="images/team/simon_jupp.png"/>
+              Simon Jupp
+            </div>
+            <div>
+              <img src="images/team/tony_burdett.png"/>
+              Tony Burdett
+            </div>
+            <div class="logo">
+              <img src="images/logos/logo-ebi.png" class="plain logo"/>
+            </div>
+
+            <div class="logo right">
+                <img src="images/logos/wellcome_sanger_institute_logo_landscape_digital_rgb_monotone_blue.svg" class="plain logo"/>
+            </div>
+            <div class="right">
+                <img src="images/team/aleksandra_tarkowska.jpg"/>
+                Aleksandra Tarkowska
+              </div>
+            </div>
+
+          <div class="idrteam idrteam-former">
+            <div>
+              <img src="images/team/anatole_chessel.jpg"/>
+              Anatole Chessel
+            </div>
+            <div>
+              <img src="images/team/richard_ferguson.png"/>
+              Richard Ferguson
+            </div>
+            <div>
+              <img src="images/team/helen_flynn.png"/>
+              Helen Flynn
+            </div>
+            <div>
+              <img src="images/team/kenny_gillen.jpg"/>
+              Kenny Gillen
+            </div>
+            <div>
+              <img src="images/team/roger_leigh.jpg"/>
+              Roger Leigh
+            </div>
+            <div>
+              <img src="images/team/simone_leo.jpg"/>
+              Simone Leo
+            </div>
+            <div>
+              <img src="images/team/gabriella_rustici.png"/>
+              Gabriella Rustici
+            </div>
+            <div>
+              <img src="images/team/eleanor_williams.png"/>
+              Eleanor Williams
+            </div>
+            <p>Former<br/>members</p>
+          </div>
+
+          <div class="idr-funder-logos">
+            <div>
+              <img src="images/logos/bbsrc-ukri-full-colour-rgb-150dpi.png" class="plain"/>
+              <img src="images/logos/wellcome-logo-black.png" class="plain"/>
+              <img src="images/logos/eosclogo.png" class="plain"/>
+              <img src="images/logos/h2020-co-funded-horiz-en.png" class="plain"/>
+              <img src="images/logos/euro_bio_imaging_logo.jpg" class="plain"/>
+              <img src="images/logos/globalbioimaging_logo.png" class="plain"/>
+              <img src="images/logos/czi-logo.svg" class="plain"/>
+            </div>
+          </div>
+
+          <p class="subtext slide-link"><a href="https://bit.ly/rse-idr"><i class="fas fa-hand-point-right"></i> https://bit.ly/rse-idr</a></p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true },
+          // Zoom in and out with Alt+click
+      		{ src: 'plugin/zoom-js/zoom.js', async: true }
+        ],
+        center: false,
+        hash: true
+      });
+    </script>
+  </body>
 </html>
