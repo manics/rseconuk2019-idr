@@ -143,8 +143,8 @@
       }
 
       .logo-row-images img {
-        float: left;
         padding: 0 0.2em;
+        height: 2em;
       }
 
       .abs-top-left {
@@ -172,6 +172,7 @@
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(3, 1fr);
         width: 100%;
+        height: 720px;
       }
       div.imagescale-grid img {
         width: 300px;
@@ -289,7 +290,7 @@
         margin: 0;
       }
       div.idrteam img.logo {
-        width: 100%;
+        width: auto;
         object-fit: contain;
         margin: 0;
       }
@@ -617,8 +618,8 @@
           <section data-background-image="images/pathway/big_data_harddrives.jpg" data-background-position="top right" data-background-repeat="no-repeat" data-background-size="50%">
             <div class="l-double">
               <div>
-                <a href="https://idr.openmicroscopy.org/">
-                  <img src="images/logos/logo-idr.svg" class="plain" style="width:60%;"/>
+                <a href="https://idr.openmicroscopy.org/" style="height:2.5em; display: block;">
+                  <img src="images/logos/logo-idr.svg" class="plain"/>
                 </a>
                 <p>A public repository for <span class="emph">reference</span> datasets and images of interest to a <span class="emph">broader community of users</span></p>
                 <p>Provides the expertise needed to curate and publish life-science imaging data effectively</p>
@@ -903,7 +904,7 @@
 
           <section data-background-image="images/slidebg/clouds.jpg">
             <h2>Demo 2, May 2016</h2>
-            <div class="logo-row-images" style="height:2em;">
+            <div class="logo-row-images">
               <img src="images/logos/embl_ebi_logo_black.svg"/>
               <img src="images/logos/openstack-logo-horizontal.svg"/>
               <img src="images/logos/ansible-logo.svg"/>
